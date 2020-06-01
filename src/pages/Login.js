@@ -1,6 +1,6 @@
 import React from "react";
-import loginImage from "./login.svg";
 import axios from "axios";
+import loginImage from "./img/login.svg";
 
 export class Login extends React.Component {
 
@@ -36,7 +36,7 @@ export class Login extends React.Component {
     render() {
         return (
         <div className="base-container">
-            <div className="header">Login</div>
+            <div className="header">Welcome back. \nPlease enter your login credentials.</div>
             <div className="content">
                 <div className="image">
                     <img src={loginImage} />
@@ -44,11 +44,11 @@ export class Login extends React.Component {
                 <div className="form">
                     <div className="form-group">
                         <label htmlFor="username">Username</label>
-                        <input type="text" name="username" placeholder='enter your username..' onChange={this.onChange} value={this.state.username}/>
+                        <input type="text" name="username" placeholder='' onChange={this.onChange} value={this.state.username}/>
                     </div>
                     <div className="form-group">
                         <label htmlFor="password">Password</label>
-                        <input type="password" name="password" placeholder='enter your password..' onChange={this.onChange} value={this.state.password}/>
+                        <input type="password" name="password" placeholder='' onChange={this.onChange} value={this.state.password}/>
                     </div>
                 </div>
             </div>
@@ -58,7 +58,7 @@ export class Login extends React.Component {
                         className="loginBTN"
                         onClick={this.login}
                     >
-                        Login
+                        LOGIN
                     </button>
             </div>
         </div>
