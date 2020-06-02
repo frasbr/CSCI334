@@ -5,6 +5,7 @@ import "./App.css";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
+import TourView from "./pages/TourView";
 import CreateTour from "./pages/CreateTour";
 
 function App() {
@@ -15,6 +16,16 @@ function App() {
     if (token) {
         console.log("authorised");
         axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+        if (
+            document.location.pathname === "/" ||
+            document.location.pathname === "/login"
+        ) {
+            document.location = "/home";
+        }
+    } else {
+        if (document.location.pathname !== "/login") {
+            document.location = "login";
+        }
     }
 
     // render the app
@@ -25,6 +36,7 @@ function App() {
                     <Route path="/login" component={Login} />
                     <Route path="/register" component={Register} />
                     <Route path="/home" component={Home} />
+                    <Route path="/tour/view" component={TourView} />
                     <Route path="/tour/create" component={CreateTour} />
                 </Switch>
             </Router>
