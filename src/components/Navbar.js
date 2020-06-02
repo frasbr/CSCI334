@@ -26,10 +26,17 @@ export default class Navbar extends Component {
                 });
                 let user = localStorage.getItem("currentUser");
                 if (!user) {
-                    localStorage.setItem("currentUser", data.user);
+                    localStorage.setItem(
+                        "currentUser",
+                        JSON.stringify(data.user)
+                    );
                 } else {
+                    user = JSON.parse(user);
                     if (user.id !== data.user.id) {
-                        localStorage.setItem("currentUser", data.user);
+                        localStorage.setItem(
+                            "currentUser",
+                            JSON.stringify(data.user)
+                        );
                     }
                 }
             })
