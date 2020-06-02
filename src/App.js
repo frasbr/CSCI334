@@ -1,20 +1,33 @@
-import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import './App.css';
-import Login from './pages/Login.js';
-import Register from './pages/Register.js';
+import React from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import axios from "axios";
+import "./App.css";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Home from "./pages/Home";
 
 function App() {
-  return (
-    <div className="App">
-      <Router>
-        <Switch>
-          <Route path='/login' component={Login} />
-          <Route path='/register' component={Register} />
-        </Switch>
-      </Router>
-    </div>
-  );
+    axios.defaults.headers.post["Content-Type"] =
+        "application/x-www-form-urlencoded";
+
+    const token = localStorage.getItem("authToken");
+    if (token) {
+        console.log("authorised");
+        axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+    }
+
+    // render the app
+    return (
+        <div className="App">
+            <Router>
+                <Switch>
+                    <Route path="/login" component={Login} />
+                    <Route path="/register" component={Register} />
+                    <Route path="/home" component={Home} />
+                </Switch>
+            </Router>
+        </div>
+    );
 }
 
 export default App;
