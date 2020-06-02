@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
 import TourView from "./pages/TourView";
+import CreateTour from "./pages/CreateTour";
 
 function App() {
     axios.defaults.headers.post["Content-Type"] =
@@ -36,6 +37,7 @@ function App() {
                     <Route path="/register" component={Register} />
                     <Route path="/home" component={Home} />
                     <Route path="/tour/view" component={TourView} />
+                    <Route path="/tour/create" component={CreateTour} />
                 </Switch>
             </Router>
         </div>
