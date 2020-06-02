@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import debounce from "lodash/debounce";
 import axios from "axios";
+import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
+
+import "../index.scss";
 
 export default class Home extends Component {
     constructor(props) {
@@ -72,54 +76,64 @@ export default class Home extends Component {
 
     render() {
         return (
-            <div className="base-container">
-                <div className="header">Home</div>
+            <>
+                <Navbar />
+                <div className="base-container">
+                    <div className="header">Home</div>
 
-                <div className="form">
-                    <div className="form-group">
-                        <label htmlFor="filter">Search by:</label>
-                        <select
-                            name="searchType"
-                            onChange={this.onChange}
-                            value={this.state.searchType}
+                    <div className="form">
+                        <div className="form-group">
+                            <label htmlFor="filter">Search by:</label>
+                            <select
+                                name="searchType"
+                                onChange={this.onChange}
+                                value={this.state.searchType}
+                            >
+                                <option value="name">Name</option>
+                                <option value="location">Location</option>
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label
+                                htmlFor="query"
+                                style={{ visibility: "hidden" }}
+                            >
+                                Search:
+                            </label>
+                            <input
+                                type="text"
+                                name="query"
+                                placeholder="Search for tours..."
+                                onChange={this.onChange}
+                                value={this.state.query}
+                            />
+                        </div>
+                        <button
+                            type="button"
+                            className="searchBTN"
+                            onClick={this.handleSearch}
                         >
-                            <option value="name">Name</option>
-                            <option value="location">Location</option>
-                        </select>
+                            Search
+                        </button>
                     </div>
-                    <div className="form-group">
-                        <label htmlFor="query" style={{ visibility: "hidden" }}>
-                            Search:
-                        </label>
-                        <input
-                            type="text"
-                            name="query"
-                            placeholder="Search for tours..."
-                            onChange={this.onChange}
-                            value={this.state.query}
-                        />
+                    <div className="tour-count">
+                        Found {this.state.tours.length} tours
                     </div>
-                    <button
-                        type="button"
-                        className="searchBTN"
-                        onClick={this.handleSearch}
-                    >
-                        Search
-                    </button>
+                    {this.state.tours.length > 0 && (
+                        <div className="search-results">
+                            {this.state.tours.map((tour) => (
+                                <Link to={`/tour/view?id=${tour.id}`}>
+                                    <div className="tour">
+                                        <div className="title">
+                                            {tour.title}
+                                        </div>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    )}
                 </div>
-                <div className="tour-count">
-                    Found {this.state.tours.length} tours
-                </div>
-                {this.state.tours.length > 0 && (
-                    <div className="search-results">
-                        {this.state.tours.map((tour) => (
-                            <div className="tour">
-                                <div className="title">{tour.title}</div>
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </div>
+            </>
         );
     }
 }
