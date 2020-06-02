@@ -27,7 +27,7 @@ create = () => {
         })
         .then(({ data }) => {
  
-                // redirect
+                // redirect to tour page
                 const {id} = data.tour;
                 document.location = `/tour/view?id=${id}`;
             
@@ -80,22 +80,24 @@ render() {
                         </div>
                         <div className="form-group">
                             <label htmlFor="description">Description and Features of your Tour</label>
-                            <input
-                                type="text"
+                            <textarea
                                 name="description"
-                                placeholder="enter info regarding your tour"
+                                placeholder="enter features and a description regarding your tour"
                                 onChange={this.onChange}
                                 value={this.state.description}
+                                rows={4}
+                                cols={37}
                             />
                         </div>
                         <div className="form-group">
                             <label htmlFor="category">Category of your Tour</label>
-                            <input
-                                type="text"
+                            <textarea
                                 name="category"
                                 placeholder="e.g. 'Sightseeing', 'Watersports', 'Culture'"
                                 onChange={this.onChange}
                                 value={this.state.category}
+                                rows={2}
+                                cols={37}
                             />
                         </div>
                         <div className="form-group">
