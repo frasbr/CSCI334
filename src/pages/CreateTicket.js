@@ -1,6 +1,8 @@
 import React from "react";
 import axios from "axios";
 
+import qs from "query-string";
+
 export class CreateTicket extends React.Component {
     constructor(props) {
         super(props);
@@ -30,31 +32,42 @@ export class CreateTicket extends React.Component {
         console.log(this.state.selectedFile);
     };
 
+    componentDidMount() {
+        const { booking } = qs.parse(document.location.search);
+        if (!booking) {
+            this.setState({category: "verification"});
+        } else {
+            this.setState({
+                category: "tour",
+                bookingId: booking
+            });
+        }
+    }
+
     ticket = () => {
         console.log(this.state);
-        // const { bookingId, content, document, category } = this.state;
-        // axios
-        //     .post("http://localhost:5000/ticket/create", {
-        //         bookingId,
-        //         content,
-        //         document,
-        //         category,
-        //     })
+        const { bookingId, content, document, category } = this.state;
+        axios
+            .post("http://localhost:5000/ticket/create", {
+                bookingId,
+                content,
+                document,
+                category,
+            })
 
-        //     .then(({ data }) => {
-        //         if (data.success) {
-        //             // redirect
-        //             document.location = "/profile"; // maybe should re-direct to previous page of where they navigated from
-        //         }
-        //     })
-        //     .catch((err) => {
-        //         if (err.response) {
-        //             this.setState({
-        //                 error: err.response.data.message,
-        //                 isError: true,
-        //             });
-        //         }
-        //     });
+            .then(({ data }) => {
+               
+                 document.location = "/profile"; // maybe should re-direct to previous page of where they navigated from
+                
+            })
+            .catch((err) => {
+                if (err.response) {
+                    this.setState({
+                        error: err.response.data.message,
+                        isError: true,
+                    });
+                }
+            });
     };
 
     onChange = (e) => {
@@ -73,32 +86,6 @@ export class CreateTicket extends React.Component {
                 </div>
                 <div className="content">
                     <div className="form">
-                        <div className="form-group">
-                            <label htmlFor="filter">
-                                Ticket Type (category):{" "}
-                            </label>
-                            <select
-                                name="category"
-                                onChange={this.onChange}
-                                value={this.state.category}
-                            >
-                                <option value="verification">
-                                    ID Verification Request
-                                </option>
-                                <option value="tour">Tour disputes</option>
-                            </select>
-                            {this.state.category === "tour" && (
-                                <div className="form-group">
-                                    <label htmlFor="content">Description</label>
-
-                                    <textarea
-                                        name="content"
-                                        placeholder="input tour dispute information here.."
-                                        onChange={this.onChange}
-                                        value={this.state.content}
-                                    />
-                                </div>
-                            )}
                             <div className="form-group">
                                 <label htmlFor="document">
                                     Upload Document:{" "}
@@ -131,7 +118,6 @@ export class CreateTicket extends React.Component {
                         )}
                     </div>
                 </div>
-            </div>
         );
     }
 }
