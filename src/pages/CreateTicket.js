@@ -32,13 +32,13 @@ export class CreateTicket extends React.Component {
         }
 
         ticket = () => {
-            const { bookingID, content, document, searchType} = this.state;
+            const { bookingId, content, document, category} = this.state;
             axios
                 .post("http://localhost:5000/ticket/create", {
-                    bookingID,
+                    bookingId,
                     content,
                     document,
-                    searchType,
+                    category,
                 })
 
                 .then(({ data }) => {
