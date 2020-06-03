@@ -91,15 +91,24 @@ export default class TourView extends Component {
     };
 
     getBookingInfo = (session) => {
-        Axios.get(`http://localhost:5000/tour/booking/bySession/${session.id}`)
-            .then(({ data }) => {
-                this.setState({
-                    bookingsToShow: data.bookings,
-                });
-            })
-            .catch((err) => {
-                console.log(err.response);
-            });
+        this.setState(
+            {
+                bookingsToShow: null,
+            },
+            () => {
+                Axios.get(
+                    `http://localhost:5000/tour/booking/bySession/${session.id}`
+                )
+                    .then(({ data }) => {
+                        this.setState({
+                            bookingsToShow: data.bookings,
+                        });
+                    })
+                    .catch((err) => {
+                        console.log(err.response);
+                    });
+            }
+        );
     };
 
     startEdit = () => {
