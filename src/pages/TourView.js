@@ -43,7 +43,7 @@ export default class TourView extends Component {
                 description: data.tour.description,
                 location: data.tour.location,
                 category: data.tour.category,
-                price: data.tour.price / 100,
+                price: data.tour.price,
                 offer: data.tour.price / 100,
             });
         });
