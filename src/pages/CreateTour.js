@@ -117,10 +117,10 @@ export class CreateTour extends React.Component {
                                     </label>
                                     <input
                                         type="text"
-                                        name="cost"
+                                        name="price"
                                         placeholder="e.g. '$120.90 AUD'"
                                         onChange={this.onChange}
-                                        value={this.state.cost}
+                                        value={this.state.price}
                                     />
                                 </div>
                             </div>
