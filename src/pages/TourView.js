@@ -38,14 +38,15 @@ export default class TourView extends Component {
         Axios.get(`http://localhost:5000/tour/byId/${id}`).then(({ data }) => {
             this.getGuideInfo(data.tour.guide);
             this.getTourSessions(data.tour.id);
+            const price = data.tour.price / 100;
             this.setState({
                 tour: data.tour,
                 title: data.tour.title,
                 description: data.tour.description,
                 location: data.tour.location,
                 category: data.tour.category,
-                price: data.tour.price / 100,
-                offer: data.tour.price / 100,
+                price: price,
+                offer: price,
             });
         });
     };
@@ -149,7 +150,7 @@ export default class TourView extends Component {
         this.setState({
             isBooking: false,
             currentBooking: null,
-            offer: this.state.tour.price,
+            offer: this.state.tour.price / 100,
         });
     };
 
@@ -172,8 +173,7 @@ export default class TourView extends Component {
         }).then(({ data }) => {
             this.setState(
                 {
-                    bookingSuccessMsg:
-                        "Made an offer for $" + this.state.offer * 100,
+                    bookingSuccessMsg: "Made an offer for $" + this.state.offer,
                     bookingSuccess: i,
                 },
                 // after this state is set then run the endBooking func
@@ -237,7 +237,7 @@ export default class TourView extends Component {
                             category: {this.state.tour.category}
                         </div>
                         <div className="price">
-                            price: ${this.state.tour.price}
+                            price: ${this.state.tour.price / 100}
                         </div>
                         <div className="host">
                             Hosted by: {this.state.guide.firstName}{" "}
