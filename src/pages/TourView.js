@@ -390,7 +390,8 @@ export default class TourView extends Component {
                                                         )}
                                                     </div>
                                                     <div className="offer">
-                                                        Offer: {booking.offer}
+                                                        Offer:{" "}
+                                                        {booking.offer / 100}
                                                     </div>
                                                     <div className="state">
                                                         State: {booking.state}
