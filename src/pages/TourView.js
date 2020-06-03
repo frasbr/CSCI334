@@ -295,7 +295,7 @@ export default class TourView extends Component {
                         </div>
                     </div>
                 )}
-                {this.state.guide && !this.state.editing && (
+                {this.state.isEditable && !this.state.editing && (
                     <button className="editBtn" onClick={this.startEdit}>
                         Edit
                     </button>

@@ -1,6 +1,8 @@
 import React from "react";
 import axios from "axios";
 
+import Navbar from "../components/Navbar";
+
 import createTourImage from "./img/createTour.jpg";
 
 export class CreateTour extends React.Component {
