@@ -19,6 +19,7 @@ export default class TourView extends Component {
             category: "",
             price: "",
             offer: "",
+            reply: "",
         };
     }
 
@@ -43,7 +44,7 @@ export default class TourView extends Component {
                 description: data.tour.description,
                 location: data.tour.location,
                 category: data.tour.category,
-                price: data.tour.price,
+                price: data.tour.price / 100,
                 offer: data.tour.price / 100,
             });
         });
@@ -208,14 +209,14 @@ export default class TourView extends Component {
     };
 
     sendReply = (userId, i) => {
-        Axios.post(`http://localhost:5000/message/send/${userId}`).then(
-            ({ data }) => {
-                this.setState({
-                    bookingMessageFocus: null,
-                    bookingMessageSuccess: i,
-                });
-            }
-        );
+        Axios.post(`http://localhost:5000/message/send/${userId}`, {
+            message: this.state.reply,
+        }).then(({ data }) => {
+            this.setState({
+                bookingMessageFocus: null,
+                bookingMessageSuccess: i,
+            });
+        });
     };
 
     render() {
@@ -363,7 +364,8 @@ export default class TourView extends Component {
                                     </button>
                                 </div>
                             )}
-                        {this.state.bookingsToShow &&
+                        {this.state.isEditable &&
+                            this.state.bookingsToShow &&
                             this.state.showBookings === i && (
                                 <>
                                     <h4>Bookings</h4>
