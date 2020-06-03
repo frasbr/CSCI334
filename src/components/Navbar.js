@@ -77,7 +77,7 @@ export default class Navbar extends Component {
                     <Link to="/ticket/view">View Support Tickets</Link>
                 )}
                 {this.state.user && !this.state.user.validated && (
-                    <Link to="/ticket/create" />
+                    <Link to="/ticket/create">Apply to become a host</Link>
                 )}
             </nav>
         );
