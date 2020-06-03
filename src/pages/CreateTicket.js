@@ -28,6 +28,7 @@ export class CreateTicket extends React.Component {
             this.state.selectedFile,
             this.setState.selectedFile.name
         );
+
         // confirmation to display in console
         console.log(this.state.selectedFile);
     };
@@ -48,20 +49,18 @@ export class CreateTicket extends React.Component {
     }
 
     ticket = () => {
-        console.log(this.state);
-        const { bookingId, content, document, category } = this.state;
+        const { bookingId, content, category } = this.state;
         axios
             .post("http://localhost:5000/ticket/create", {
                 bookingId,
                 content,
-                document,
                 category,
             })
-
             .then(({ data }) => {
                 document.location = "/profile"; // maybe should re-direct to previous page of where they navigated from
             })
             .catch((err) => {
+                console.log(err);
                 if (err.response) {
                     this.setState({
                         error: err.response.data.message,
