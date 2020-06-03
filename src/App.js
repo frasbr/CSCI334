@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import TourView from "./pages/TourView";
 import CreateTour from "./pages/CreateTour";
 import CreateTourSession from "./pages/CreateTourSession";
+import Profile from "./pages/Profile";
 
 function App() {
     axios.defaults.headers.post["Content-Type"] =
@@ -43,6 +44,7 @@ function App() {
                         path="/tour/session/create"
                         component={CreateTourSession}
                     />
+                    <Route path="/profile" component={Profile} />
                 </Switch>
             </Router>
         </div>
