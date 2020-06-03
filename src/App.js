@@ -39,7 +39,10 @@ function App() {
                     <Route path="/home" component={Home} />
                     <Route path="/tour/view" component={TourView} />
                     <Route path="/tour/create" component={CreateTour} />
-                    <Route path="/tour/session" component={CreateTourSession} />
+                    <Route
+                        path="/tour/session/create"
+                        component={CreateTourSession}
+                    />
                 </Switch>
             </Router>
         </div>

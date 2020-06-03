@@ -9,6 +9,7 @@ export default class TourView extends Component {
         super(props);
         this.state = {
             tour: null,
+            sessions: [],
             guide: null,
             isEditable: false,
             editing: false,
@@ -17,6 +18,7 @@ export default class TourView extends Component {
             location: "",
             category: "",
             price: "",
+            offer: "",
         };
     }
 
@@ -34,6 +36,7 @@ export default class TourView extends Component {
         const { id } = qs.parse(document.location.search);
         Axios.get(`http://localhost:5000/tour/byId/${id}`).then(({ data }) => {
             this.getGuideInfo(data.tour.guide);
+            this.getTourSessions(data.tour.id);
             this.setState(
                 {
                     tour: data.tour,
@@ -41,13 +44,26 @@ export default class TourView extends Component {
                     description: data.tour.description,
                     location: data.tour.location,
                     category: data.tour.category,
-                    price: data.tour.price,
+                    price: data.tour.price / 100,
+                    offer: data.tour.price / 100,
                 },
                 () => {
                     console.log("tour:", this.state.tour);
                 }
             );
         });
+    };
+
+    getTourSessions = (tourId) => {
+        Axios.get(`http://localhost:5000/tour/session/byTour/${tourId}`)
+            .then(({ data }) => {
+                this.setState({
+                    sessions: data.sessions,
+                });
+            })
+            .catch((err) => {
+                console.log(err.response);
+            });
     };
 
     getGuideInfo = (id) => {
@@ -72,6 +88,18 @@ export default class TourView extends Component {
                 });
             }
         });
+    };
+
+    getBookingInfo = (session) => {
+        Axios.get(`http://localhost:5000/tour/booking/bySession/${session.id}`)
+            .then(({ data }) => {
+                this.setState({
+                    bookingsToShow: data.bookings,
+                });
+            })
+            .catch((err) => {
+                console.log(err.response);
+            });
     };
 
     startEdit = () => {
@@ -104,24 +132,88 @@ export default class TourView extends Component {
         });
     };
 
+    getSessionDate = (session) => {
+        const dateObj = new Date(session.startTime);
+        return `${dateObj.getDate()}${"/"}${dateObj.getMonth()}${"/"}${dateObj.getYear()}`;
+    };
+
+    startBooking = (i) => {
+        this.setState({
+            isBooking: true,
+            currentBooking: i,
+        });
+    };
+
+    endBooking = () => {
+        this.setState({
+            isBooking: false,
+            currentBooking: null,
+            offer: this.state.tour.price,
+        });
+    };
+
+    viewBookings = (session, i) => {
+        this.getBookingInfo(session);
+        this.setState({
+            showBookings: i,
+        });
+    };
+
+    stopViewingBookings = () => {
+        this.setState({
+            showBookings: null,
+        });
+    };
+
+    confirmBooking = (session, i) => {
+        Axios.post(`http://localhost:5000/tour/session/${session.id}/book`, {
+            offer: this.state.offer,
+        }).then(({ data }) => {
+            this.setState(
+                {
+                    bookingSuccessMsg: "Made an offer for $" + this.state.offer,
+                    bookingSuccess: i,
+                },
+                // after this state is set then run the endBooking func
+                this.endBooking
+            );
+        });
+    };
+
+    updateBookingOffer = (booking, newState, i) => {
+        Axios.post(`http://localhost:5000/tour/booking/${booking.id}/update`, {
+            state: newState,
+        }).then(({ data }) => {
+            this.setState((state) => {
+                state.bookingsToShow[i].state = newState;
+                return state;
+            });
+        });
+    };
+
+    displayDate = (date) => {
+        const dateObj = new Date(date);
+        return dateObj.toDateString();
+    };
+
     render() {
         return (
             <div>
                 <Navbar />
                 {this.state.tour && this.state.guide && !this.state.editing && (
                     <div className="tour">
-                        <div className="headline">{this.state.tour.title}</div>
+                        <h2 className="headline">{this.state.tour.title}</h2>
                         <div className="description">
-                            {this.state.tour.description}
+                            description: {this.state.tour.description}
                         </div>
                         <div className="location">
-                            {this.state.tour.location}
+                            location: {this.state.tour.location}
                         </div>
                         <div className="category">
                             category: {this.state.tour.category}
                         </div>
                         <div className="price">
-                            price: ${this.state.tour.price / 100}
+                            price: ${this.state.tour.price}
                         </div>
                         <div className="host">
                             Hosted by: {this.state.guide.firstName}{" "}
@@ -192,6 +284,126 @@ export default class TourView extends Component {
                         Save changes
                     </button>
                 )}
+                <h2 className="sessions">Sessions</h2>
+                {this.state.sessions.map((session, i) => (
+                    <div
+                        key={session.id}
+                        className="session"
+                        style={{ marginBottom: "20px" }}
+                    >
+                        <div className="date">
+                            {this.getSessionDate(session)}
+                        </div>
+                        <div className="capacity">{session.capacity}</div>
+                        <div className="notes">{session.notes}</div>
+                        {this.state.guide && (
+                            <button
+                                className="viewBookingsBtn"
+                                onClick={() => this.viewBookings(session, i)}
+                            >
+                                View current bookings
+                            </button>
+                        )}
+                        {this.state.bookingSuccess !== i && (
+                            <button
+                                className="book-btn"
+                                onClick={() => this.startBooking(i)}
+                            >
+                                Make a booking
+                            </button>
+                        )}
+                        {this.state.bookingSuccessMsg &&
+                            this.state.bookingSuccess === i && (
+                                <div>{this.state.bookingSuccessMsg}</div>
+                            )}
+                        {this.state.isBooking &&
+                            this.state.currentBooking === i && (
+                                <div className="booking-form">
+                                    <div className="form-group">
+                                        <label htmlFor="offer">Offer:</label>
+                                        <input
+                                            type="text"
+                                            name="offer"
+                                            value={this.state.offer}
+                                            onChange={this.onChange}
+                                        />
+                                        Enter the price you are offering to pay.
+                                        By default this is set to the price that
+                                        has been asked for by the tour guide
+                                    </div>
+                                    <button
+                                        className="confirm-booking"
+                                        onClick={() =>
+                                            this.confirmBooking(session, i)
+                                        }
+                                    >
+                                        Confirm
+                                    </button>
+                                </div>
+                            )}
+                        {this.state.bookingsToShow &&
+                            this.state.showBookings === i && (
+                                <>
+                                    <h4>Bookings</h4>
+                                    <div
+                                        className="bookings"
+                                        style={{ display: "flex" }}
+                                    >
+                                        {this.state.bookingsToShow.map(
+                                            (booking, j) => (
+                                                <div
+                                                    className="booking"
+                                                    style={{
+                                                        marginRight: "10px",
+                                                    }}
+                                                >
+                                                    <div className="date">
+                                                        Sent at:{" "}
+                                                        {this.displayDate(
+                                                            booking.createdAt
+                                                        )}
+                                                    </div>
+                                                    <div className="offer">
+                                                        Offer: {booking.offer}
+                                                    </div>
+                                                    <div className="state">
+                                                        State: {booking.state}
+                                                    </div>
+                                                    {booking.state ===
+                                                        "pending" && (
+                                                        <>
+                                                            <button
+                                                                onClick={() =>
+                                                                    this.updateBookingOffer(
+                                                                        booking,
+                                                                        "confirmed",
+                                                                        j
+                                                                    )
+                                                                }
+                                                            >
+                                                                Confirm
+                                                            </button>
+                                                            <button
+                                                                onClick={() =>
+                                                                    this.updateBookingOffer(
+                                                                        booking,
+                                                                        "rejected",
+                                                                        j
+                                                                    )
+                                                                }
+                                                            >
+                                                                Reject
+                                                            </button>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            )
+                                        )}
+                                    </div>
+                                </>
+                            )}
+                    </div>
+                ))}
             </div>
         );
     }

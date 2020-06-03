@@ -121,8 +121,11 @@ export default class Home extends Component {
                     </div>
                     {this.state.tours.length > 0 && (
                         <div className="search-results">
-                            {this.state.tours.map((tour) => (
-                                <Link to={`/tour/view?id=${tour.id}`}>
+                            {this.state.tours.map((tour, i) => (
+                                <Link
+                                    key={tour.id}
+                                    to={`/tour/view?id=${tour.id}`}
+                                >
                                     <div className="tour">
                                         <div className="title">
                                             {tour.title}

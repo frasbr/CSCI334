@@ -1,139 +1,170 @@
-import React from 'react';
-import axios from 'axios';
-import Date from 'react';
+import React from "react";
+import axios from "axios";
+import qs from "query-string";
 
-let dateObj = new Date(); // im unsure of how to do the date ik this is incorrect
+import Navbar from "../components/Navbar";
 
-export class CreateTour extends React.Component {
+export default class CreateTourSession extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            // need date to be added to backend
-            dateObj: "",
+            date: "",
             startTime: "",
             finishTime: "",
             capacity: "",
             notes: "",
         };
     }
-    
+
+    componentDidMount() {
+        const { id } = qs.parse(document.location.search);
+        if (!id) {
+            document.location = "/home";
+        } else {
+            this.setState({
+                tourId: id,
+            });
+        }
+    }
+
+    generateTime = (date, time) => {
+        const [year, month, day] = date.split("-");
+        const [hour, minute] = time.split(":");
+        const dateObj = new Date();
+        dateObj.setFullYear(year);
+        dateObj.setMonth(month);
+        dateObj.setDate(day);
+        dateObj.setHours(hour);
+        dateObj.setMinutes(minute);
+        return dateObj.toISOString();
+    };
+
     createSession = () => {
-        const { dateObj, startTime, finishTime, capacity, notes } = this.state;
+        const {
+            date,
+            startTime,
+            finishTime,
+            capacity,
+            notes,
+            tourId,
+        } = this.state;
+        const start = this.generateTime(date, startTime);
+        const end = this.generateTime(date, finishTime);
         axios
-            .post(`http://localhost:5000/session/create?id=${tourId}`, {
-                dateObj,
-                startTime,
-                finishTime,
+            .post(`http://localhost:5000/tour/session/create/${tourId}`, {
+                startTime: start,
+                finishTime: end,
                 capacity,
                 notes,
             })
             .then(({ data }) => {
- 
                 // redirect to tour page
-                const {id} = data.tour;
-                document.location = `/tour/view?id=${id}`;
-            
-        })
-        .catch((err) => {
-            if (err.response) {
-                this.setState({
-                    error: err.response.data.message,
-                    isError: true,
-                });
-            }
-        });
-};
+                document.location = `/tour/view?id=${this.state.tourId}`;
+            })
+            .catch((err) => {
+                if (err.response) {
+                    this.setState({
+                        error: err.response.data.message,
+                        isError: true,
+                    });
+                }
+            });
+    };
 
-onChange = (e) => {
-    this.setState({
-        [e.target.name]: e.target.value,
-    });
-};
+    onChange = (e) => {
+        this.setState({
+            [e.target.name]: e.target.value,
+        });
+    };
 
     render() {
         return (
-            <div className="base-container">
-                <div className="header">
-                    Create Tour Sessions
-                </div>
-                <div className="content">
-                    <div className="form">
-                        <div className="form-group">
-                            <label htmlFor="dateObj">Choose the Date for this session</label>
-                            <input
-                                type="date"
-                                name="dateObj"
-                                placeholder=""
-                                onChange={this.onChange}
-                                value={this.state.dateObj.toISOstring()}
-                            />
+            <>
+                <Navbar />
+                <div className="base-container">
+                    <div className="header">Create Tour Sessions</div>
+                    <div className="content">
+                        <div className="form">
                             <div className="form-group">
-                                <label htmlFor="startTime">Session Start Time</label>
+                                <label htmlFor="dateObj">
+                                    Choose the Date for this session
+                                </label>
                                 <input
-                                    type="text"
-                                    name="startTime"
-                                    placeholder="e.g. 07:00 for 7am"
+                                    type="date"
+                                    name="date"
+                                    placeholder=""
                                     onChange={this.onChange}
-                                    value={this.state.startTime}
+                                    value={this.state.date}
                                 />
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="finishTime">Session Finish Time</label>
-                                <input
-                                    type="text"
-                                    name="finishTime"
-                                    placeholder="e.g. 13:00 for 1pm"
-                                    onChange={this.onChange}
-                                    value={this.state.finishTime}
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="capacity">Max Capacity for Tour?</label>
-                                <input
-                                    type="text"
-                                    name="capacity"
-                                    placeholder="e.g. 24 max persons only."
-                                    onChange={this.onChange}
-                                    value={this.state.capacity}
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="notes">Additional Notes for tour quests</label>
-                                <textarea
-                                    name="notes"
-                                    placeholder="e.g. 'meet at the big clock tower @ 7am'"
-                                    onChange={this.onChange}
-                                    value={this.state.notes}
-                                />
+                                <div className="form-group">
+                                    <label htmlFor="startTime">
+                                        Session Start Time
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="startTime"
+                                        placeholder="e.g. 07:00 for 7am"
+                                        onChange={this.onChange}
+                                        value={this.state.startTime}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="finishTime">
+                                        Session Finish Time
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="finishTime"
+                                        placeholder="e.g. 13:00 for 1pm"
+                                        onChange={this.onChange}
+                                        value={this.state.finishTime}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="capacity">
+                                        Max Capacity for Tour?
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="capacity"
+                                        placeholder="e.g. 24 max persons only."
+                                        onChange={this.onChange}
+                                        value={this.state.capacity}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="notes">
+                                        Additional Notes for tour quests
+                                    </label>
+                                    <textarea
+                                        name="notes"
+                                        placeholder="e.g. 'meet at the big clock tower @ 7am'"
+                                        onChange={this.onChange}
+                                        value={this.state.notes}
+                                    />
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="footer">
-                        <button
-                            type="button"
-                            className="createSessionBTN"
-                            onClick={this.create}
-                        >
-                            Create Session
-                        </button>
-                        {this.state.isError && (
-                            <div
-                                className="error-message"
-                                style={{ color: "red" }}
+                        <div className="footer">
+                            <button
+                                type="button"
+                                className="createSessionBTN"
+                                onClick={this.createSession}
                             >
-                                {this.state.error}
-                            </div>
-                        )}
+                                Create Session
+                            </button>
+                            {this.state.isError && (
+                                <div
+                                    className="error-message"
+                                    style={{ color: "red" }}
+                                >
+                                    {this.state.error}
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
-            </div>
+            </>
         );
     }
-    }
-    
-    export default CreateTourSession;
-
-
-
-
-
+}

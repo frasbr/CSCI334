@@ -48,6 +48,10 @@ export default class Navbar extends Component {
             });
     };
 
+    logout = () => {
+        setCurrentUser();
+    };
+
     render() {
         return (
             <nav className="navbar">
@@ -60,6 +64,9 @@ export default class Navbar extends Component {
                 <Link to="/home">Home</Link>
                 <Link to="/profile">Profile</Link>
                 <Link to="/ticket/create">Ticket</Link>
+                <button className="logout" onClick={this.logout}>
+                    Log out
+                </button>
             </nav>
         );
     }
