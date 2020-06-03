@@ -1,15 +1,14 @@
 import React from "react";
 import axios from "axios";
-import Register from "./register";
 
 export class CreateTicket extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            bookingID: "",
+            bookingId: "",
             content: "",
             document: "",
-            searchType: "verification",
+            category: "verification",
             selectedFile: null,
         };
     }
@@ -17,7 +16,7 @@ export class CreateTicket extends React.Component {
         onFileChange = e => {
 
             // updates the state
-            this.setState({ selectedFile: e.target.files[0] });
+            this.setState({ selectedFile: e.target.files[0]});
         };
 
         onFileUpload = () => {
@@ -29,15 +28,13 @@ export class CreateTicket extends React.Component {
             this.setState.selectedFile.name
             );
             // confirmation to display in console
-            console.log(this.state.selectedFile);
-    
+            console.log(this.state.selectedFile); 
         }
-
 
         ticket = () => {
             const { bookingID, content, document, searchType} = this.state;
             axios
-                .post("http://localhost:5000/auth/register/us", {
+                .post("http://localhost:5000/ticket/create", {
                     bookingID,
                     content,
                     document,
@@ -47,7 +44,7 @@ export class CreateTicket extends React.Component {
                 .then(({ data }) => {
                     if (data.success) {
                         // redirect
-                        document.location = "/home"; // maybe should re-direct to previous page of where they navigated from
+                        document.location = "/profile"; // maybe should re-direct to previous page of where they navigated from
                     }
                 })
                 .catch((err) => {
@@ -77,21 +74,22 @@ export class CreateTicket extends React.Component {
                             <div className="form-group">
                                 <label htmlFor="filter">Ticket Type (category): </label>
                             <select
-                                name="searchType"
+                                name="category"
                                 onChange={this.onChange}
-                                value={this.state.searchType}
+                                value={this.state.category}
                             >
                                 <option value="verification">ID Verification Request</option>
                                 <option value="tour">Tour disputes</option>
                             </select>
                                 <div className="form-group">
-                                    <label htmlFor="content">Description ()</label>
+                                    <label htmlFor="content">Description</label>
+                                    {this.state.content === "tour" && (
                                     <textarea
                                         name="content"
                                         placeholder="input tour dispute information here.."
                                         onChange={this.onChange}
                                         value={this.state.content}
-                                    />
+                                    /> )}
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="document">Upload Document: </label>
@@ -103,9 +101,6 @@ export class CreateTicket extends React.Component {
                                         value={this.state.document}
                                     />
                                 </div>
-                                <div>
-                                   <button onClick={this.onFileUpload}>Upload</button>
-                                </div> 
                             </div>
                         </div>
                         <div className="footer">
@@ -131,4 +126,4 @@ export class CreateTicket extends React.Component {
         }
     }
 
-export default Register;
+export default CreateTicket;
