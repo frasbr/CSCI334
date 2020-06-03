@@ -473,6 +473,15 @@ export default class TourView extends Component {
                             )}
                     </div>
                 ))}
+                {this.state.isEditable && (
+                    <button
+                        onClick={() => {
+                            document.location = `/tour/session/create?id=${this.state.tour.id}`;
+                        }}
+                    >
+                        Add new session
+                    </button>
+                )}
             </div>
         );
     }
