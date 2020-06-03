@@ -49,14 +49,9 @@ export default class Home extends Component {
         axios
             .get(url)
             .then(({ data }) => {
-                this.setState(
-                    {
-                        tours: data.tours,
-                    },
-                    () => {
-                        console.log(this.state.tours);
-                    }
-                );
+                this.setState({
+                    tours: data.tours,
+                });
             })
             .catch((err) => {
                 if (err.response) {
