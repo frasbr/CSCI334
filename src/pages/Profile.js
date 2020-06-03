@@ -135,6 +135,7 @@ export default class Profile extends Component {
                     this.setState(
                         (state) => {
                             state.sessions[i].tourName = data.tour.title;
+                            state.sessions[i].tourLocation = data.tour.location;
                             return state;
                         },
                         () => {
@@ -149,12 +150,17 @@ export default class Profile extends Component {
         });
     };
 
+    createDateString = (date) => {
+        const dateObj = new Date(date);
+        return dateObj.toDateString();
+    };
+
+    submitTicket = (session) => {
+        document.location = `/ticket?booking=${session.Bookings[0].id}`;
+    };
+
     render() {
         const { user, isOwnProfile, editing } = this.state;
-        let dateString;
-        if (user) {
-            dateString = new Date(user.createdAt).toDateString();
-        }
         return (
             <>
                 <Navbar />
@@ -171,7 +177,8 @@ export default class Profile extends Component {
                                 </div>
                             )}
                             <div className="registerDate">
-                                member since: {dateString}
+                                member since:{" "}
+                                {this.createDateString(user.createdAt)}
                             </div>
                             {!editing && (
                                 <div className="bio">bio: {user.bio}</div>
@@ -204,7 +211,7 @@ export default class Profile extends Component {
                             )}
                             {this.state.sessionsReadyToRender && (
                                 <>
-                                    <h3>Sessions</h3>
+                                    <h3>Your upcoming tours</h3>
                                     <div
                                         className="sessions"
                                         style={{ display: "flex" }}
@@ -217,6 +224,23 @@ export default class Profile extends Component {
                                                 <div className="tourName">
                                                     {session.tourName}
                                                 </div>
+                                                <div className="tourLocation">
+                                                    {session.tourLocation}
+                                                </div>
+                                                <div className="tourDate">
+                                                    {this.createDateString(
+                                                        session.startTime
+                                                    )}
+                                                </div>
+                                                <button
+                                                    onClick={() =>
+                                                        this.submitTicket(
+                                                            session
+                                                        )
+                                                    }
+                                                >
+                                                    Submit support ticket
+                                                </button>
                                             </div>
                                         ))}
                                     </div>
