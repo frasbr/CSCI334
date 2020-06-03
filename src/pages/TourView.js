@@ -37,20 +37,15 @@ export default class TourView extends Component {
         Axios.get(`http://localhost:5000/tour/byId/${id}`).then(({ data }) => {
             this.getGuideInfo(data.tour.guide);
             this.getTourSessions(data.tour.id);
-            this.setState(
-                {
-                    tour: data.tour,
-                    title: data.tour.title,
-                    description: data.tour.description,
-                    location: data.tour.location,
-                    category: data.tour.category,
-                    price: data.tour.price / 100,
-                    offer: data.tour.price / 100,
-                },
-                () => {
-                    console.log("tour:", this.state.tour);
-                }
-            );
+            this.setState({
+                tour: data.tour,
+                title: data.tour.title,
+                description: data.tour.description,
+                location: data.tour.location,
+                category: data.tour.category,
+                price: data.tour.price / 100,
+                offer: data.tour.price / 100,
+            });
         });
     };
 
@@ -68,14 +63,9 @@ export default class TourView extends Component {
 
     getGuideInfo = (id) => {
         Axios.get(`http://localhost:5000/user/id/${id}`).then(({ data }) => {
-            this.setState(
-                {
-                    guide: data.user,
-                },
-                () => {
-                    console.log("guide:", this.state.guide);
-                }
-            );
+            this.setState({
+                guide: data.user,
+            });
 
             // compare guide with current user to determine editing capability
             const curUser = localStorage.getItem("currentUser");
@@ -203,6 +193,28 @@ export default class TourView extends Component {
     displayDate = (date) => {
         const dateObj = new Date(date);
         return dateObj.toDateString();
+    };
+
+    toggleBookingMessageStatus = (i) => {
+        this.setState((state) => {
+            if (state.bookingMessageFocus) {
+                state.bookingMessageFocus = null;
+            } else {
+                state.bookingMessageFocus = i;
+            }
+            return state;
+        });
+    };
+
+    sendReply = (userId, i) => {
+        Axios.post(`http://localhost:5000/message/send/${userId}`).then(
+            ({ data }) => {
+                this.setState({
+                    bookingMessageFocus: null,
+                    bookingMessageSuccess: i,
+                });
+            }
+        );
     };
 
     render() {
@@ -362,6 +374,7 @@ export default class TourView extends Component {
                                             (booking, j) => (
                                                 <div
                                                     className="booking"
+                                                    key={booking.id}
                                                     style={{
                                                         marginRight: "10px",
                                                     }}
@@ -404,6 +417,53 @@ export default class TourView extends Component {
                                                                 Reject
                                                             </button>
                                                         </>
+                                                    )}
+                                                    <button
+                                                        onClick={() =>
+                                                            this.toggleBookingMessageStatus(
+                                                                j
+                                                            )
+                                                        }
+                                                    >
+                                                        {this.state
+                                                            .bookingMessageFocus ===
+                                                        j
+                                                            ? "Cancel"
+                                                            : "Message user"}
+                                                    </button>
+                                                    {this.state
+                                                        .bookingMessageFocus ===
+                                                        j && (
+                                                        <>
+                                                            <textarea
+                                                                name="reply"
+                                                                cols="40"
+                                                                rows="10"
+                                                                onChange={
+                                                                    this
+                                                                        .onChange
+                                                                }
+                                                                style={{
+                                                                    display:
+                                                                        "block",
+                                                                }}
+                                                            />
+                                                            <button
+                                                                onClick={() =>
+                                                                    this.sendReply(
+                                                                        booking.userId,
+                                                                        j
+                                                                    )
+                                                                }
+                                                            >
+                                                                Send
+                                                            </button>
+                                                        </>
+                                                    )}
+                                                    {this.state
+                                                        .bookingMessageSuccess ===
+                                                        j && (
+                                                        <div>Message sent</div>
                                                     )}
                                                 </div>
                                             )

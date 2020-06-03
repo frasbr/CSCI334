@@ -10,6 +10,8 @@ import CreateTour from "./pages/CreateTour";
 import CreateTourSession from "./pages/CreateTourSession";
 import CreateTicket from "./pages/CreateTicket";
 import Profile from "./pages/Profile";
+import ViewTickets from "./pages/ViewTickets";
+import Inbox from "./pages/Inbox";
 
 function App() {
     axios.defaults.headers.post["Content-Type"] =
@@ -45,14 +47,10 @@ function App() {
                         path="/tour/session/create"
                         component={CreateTourSession}
                     />
-                    <Route 
-                        path="/ticket/create" 
-                        component={CreateTicket}
-                    />
-                    <Route 
-                        path="/profile"
-                        component={Profile}
-                    />
+                    <Route path="/ticket/create" component={CreateTicket} />
+                    <Route path="/profile" component={Profile} />
+                    <Route path="/ticket/view" component={ViewTickets} />
+                    <Route path="/inbox" component={Inbox} />
                 </Switch>
             </Router>
         </div>

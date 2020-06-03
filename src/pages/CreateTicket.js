@@ -21,14 +21,6 @@ export class CreateTicket extends React.Component {
     };
 
     onFileUpload = () => {
-        const formData = new FormData();
-
-        formData.append(
-            "myFile",
-            this.state.selectedFile,
-            this.setState.selectedFile.name
-        );
-
         // confirmation to display in console
         console.log(this.state.selectedFile);
     };
@@ -38,13 +30,10 @@ export class CreateTicket extends React.Component {
         if (!booking) {
             this.setState({ category: "verification" });
         } else {
-            this.setState(
-                {
-                    category: "tour",
-                    bookingId: booking,
-                },
-                () => console.log(this.state)
-            );
+            this.setState({
+                category: "tour",
+                bookingId: booking,
+            });
         }
     }
 
@@ -71,8 +60,6 @@ export class CreateTicket extends React.Component {
     };
 
     onChange = (e) => {
-        console.log(e.target.value);
-        console.log(this.state.category);
         this.setState({
             [e.target.name]: e.target.value,
         });
