@@ -35,12 +35,15 @@ export class CreateTicket extends React.Component {
     componentDidMount() {
         const { booking } = qs.parse(document.location.search);
         if (!booking) {
-            this.setState({category: "verification"});
+            this.setState({ category: "verification" });
         } else {
-            this.setState({
-                category: "tour",
-                bookingId: booking
-            });
+            this.setState(
+                {
+                    category: "tour",
+                    bookingId: booking,
+                },
+                () => console.log(this.state)
+            );
         }
     }
 
@@ -56,9 +59,7 @@ export class CreateTicket extends React.Component {
             })
 
             .then(({ data }) => {
-               
-                 document.location = "/profile"; // maybe should re-direct to previous page of where they navigated from
-                
+                document.location = "/profile"; // maybe should re-direct to previous page of where they navigated from
             })
             .catch((err) => {
                 if (err.response) {
@@ -86,6 +87,7 @@ export class CreateTicket extends React.Component {
                 </div>
                 <div className="content">
                     <div className="form">
+                        {this.state.category === "verification" && (
                             <div className="form-group">
                                 <label htmlFor="document">
                                     Upload Document:{" "}
@@ -98,26 +100,35 @@ export class CreateTicket extends React.Component {
                                     value={this.state.document}
                                 />
                             </div>
-                        </div>
-                    </div>
-                    <div className="footer">
-                        <button
-                            type="button"
-                            className="submitBTN"
-                            onClick={this.ticket}
-                        >
-                            Submit Form
-                        </button>
-                        {this.state.isError && (
-                            <div
-                                className="error-message"
-                                style={{ color: "red" }}
-                            >
-                                {this.state.error}
+                        )}
+                        {this.state.category === "tour" && (
+                            <div className="form-group">
+                                <label htmlFor="content">Description: </label>
+                                <textarea
+                                    name="content"
+                                    placeholder="Add some notes relating to your dispute"
+                                    onChange={this.onChange}
+                                    value={this.state.content}
+                                />
                             </div>
                         )}
                     </div>
                 </div>
+                <div className="footer">
+                    <button
+                        type="button"
+                        className="submitBTN"
+                        onClick={this.ticket}
+                    >
+                        Submit Ticket
+                    </button>
+                    {this.state.isError && (
+                        <div className="error-message" style={{ color: "red" }}>
+                            {this.state.error}
+                        </div>
+                    )}
+                </div>
+            </div>
         );
     }
 }
