@@ -172,7 +172,8 @@ export default class TourView extends Component {
         }).then(({ data }) => {
             this.setState(
                 {
-                    bookingSuccessMsg: "Made an offer for $" + this.state.offer,
+                    bookingSuccessMsg:
+                        "Made an offer for $" + this.state.offer * 100,
                     bookingSuccess: i,
                 },
                 // after this state is set then run the endBooking func
