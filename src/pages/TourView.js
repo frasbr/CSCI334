@@ -68,10 +68,11 @@ export default class TourView extends Component {
             });
 
             // compare guide with current user to determine editing capability
-            const curUser = localStorage.getItem("currentUser");
+            let curUser = localStorage.getItem("currentUser");
             // if this isnt there for some reason then just ignore
             if (!curUser) return;
             // set state if match
+            curUser = JSON.parse(curUser);
             if (data.user.id === curUser.id) {
                 this.setState({
                     isEditable: true,

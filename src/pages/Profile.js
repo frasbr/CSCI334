@@ -156,7 +156,7 @@ export default class Profile extends Component {
     };
 
     submitTicket = (session) => {
-        document.location = `/ticket?booking=${session.Bookings[0].id}`;
+        document.location = `/ticket/create?booking=${session.Bookings[0].id}`;
     };
 
     render() {
