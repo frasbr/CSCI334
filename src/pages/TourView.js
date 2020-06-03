@@ -93,15 +93,31 @@ export default class TourView extends Component {
                     `http://localhost:5000/tour/booking/bySession/${session.id}`
                 )
                     .then(({ data }) => {
-                        this.setState({
-                            bookingsToShow: data.bookings,
-                        });
+                        this.setState(
+                            {
+                                bookingsToShow: data.bookings,
+                            },
+                            this.getBookingUserInfo
+                        );
                     })
                     .catch((err) => {
                         console.log(err.response);
                     });
             }
         );
+    };
+
+    getBookingUserInfo = () => {
+        this.state.bookingsToShow.forEach((booking, i) => {
+            Axios.get(`http://localhost:5000/user/id/${booking.userId}`).then(
+                ({ data }) => {
+                    this.setState((state) => {
+                        state.bookingsToShow[i].username = data.user.username;
+                        return state;
+                    });
+                }
+            );
+        });
     };
 
     startEdit = () => {
@@ -383,6 +399,9 @@ export default class TourView extends Component {
                                                         marginRight: "10px",
                                                     }}
                                                 >
+                                                    <div className="username">
+                                                        {booking.username}
+                                                    </div>
                                                     <div className="date">
                                                         Sent at:{" "}
                                                         {this.displayDate(
