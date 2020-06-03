@@ -107,8 +107,8 @@ export class CreateTour extends React.Component {
                                         placeholder="e.g. 'Sightseeing', 'Watersports', 'Culture'"
                                         onChange={this.onChange}
                                         value={this.state.category}
-                                        rows={2}
-                                        cols={37}
+                                        rows={10}
+                                        cols={80}
                                     />
                                 </div>
                                 <div className="form-group">
