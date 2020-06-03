@@ -141,6 +141,8 @@ export default class CreateTourSession extends React.Component {
                                         placeholder="e.g. 'meet at the big clock tower @ 7am'"
                                         onChange={this.onChange}
                                         value={this.state.notes}
+                                        cols={60}
+                                        rows={10}
                                     />
                                 </div>
                             </div>
